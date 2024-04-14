@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IMGConvert AI</title>
+</head>
+<body>
+  <img src="imglogo.png" alt="Logo" width="150px">
+  <div>
+    <label for="inputFile">Choose a file:</label>
+    <input type="file" id="inputFile" accept=".png,.jpg">
+    <div id="inputFileName"></div>
+  </div>
+  <div>
+    <label for="outputType">Convert to:</label>
+    <select id="outputType">
+      <option value="png" data-type="image">.png</option>
+      <option value="jpg" data-type="image">.jpg</option>
+    </select>
+    <div id="outputFileName"></div>
+  </div>
+  <button onclick="convertFile()">Convert</button>
+
+  <script>
+    function convertFile() {
+      const inputFile = document.getElementById('inputFile');
+      const file = inputFile.files[0];
+
+      if (!file) {
+        alert('Please select a file');
+        return;
+      }
+
+      const selectedFileType = file.name.split('.').pop().toLowerCase();
+      const outputType = document.getElementById('outputType').value;
+      const outputFileType = document.querySelector(`#outputType option[value='${outputType}']`).getAttribute('data-type');
+
+      if (selectedFileType !== outputFileType) {
+        alert(`Cannot convert ${selectedFileType} to ${outputType}`);
+        return;
+      }
+
+      const newFileName = file.name.replace(/\.[^/.]+$/, `.${outputType}`);
+
+      const blob = file.slice(0, file.size, `image/${outputType}`);
+      const newFile = new File([blob], newFileName, { type: `image/${outputType}` });
+
+      const downloadLink = document.createElement('a');
+      downloadLink.href = URL.createObjectURL(newFile);
+      downloadLink.download = newFileName;
+      downloadLink.click();
+    }
+
+    document.getElementById('inputFile').addEventListener('change', function() {
+      const inputFile = document.getElementById('inputFile');
+      const inputFileName = document.getElementById('inputFileName');
+      const file = inputFile.files[0];
+      inputFileName.textContent = file.name || '';
+
+      const selectedFileType = file.name.split('.').pop().toLowerCase();
+      const outputTypeOptions = document.querySelectorAll('#outputType option');
+
+      for (let i = 0; i < outputTypeOptions.length; i++) {
+        const option = outputTypeOptions[i];
+        const optionFileType = option.getAttribute('data-type');
+        option.disabled = (selectedFileType !== optionFileType);
+      }
+    });
+
+    document.getElementById('outputType').addEventListener('change', function() {
+      const outputType = document.getElementById('outputType').value;
+      const outputFileName = document.getElementById('outputFileName');
+      const inputFile = document.getElementById('inputFile');
+      const file = inputFile.files[0];
+      const newFileName = file.name.replace(/\.[^/.]+$/, `.${outputType}`);
+      outputFileName.textContent = newFileName;
+    });
+  </script>
+</body>
+</html>
