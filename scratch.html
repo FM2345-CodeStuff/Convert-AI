@@ -6,41 +6,59 @@
   <title>SCConvert AI</title>
 </head>
 <body>
-    <img src="sblogo.png" alt="Logo">
-    <br>
-    <br>
-  <input type="file" id="fileInput" accept=".sb3">
-  <select id="conversionType">
-    <option value="zip">.zip</option>
-    <option value="rar">.rar</option>
-    <option value="json">.json</option>
-  </select>
-  <br>
-  <br>
+  <img src="scratchlogo.png" alt="Logo" width="150px">
+  <div>
+    <label for="inputFile">Choose a file:</label>
+    <input type="file" id="inputFile" accept=".sb3">
+    <div id="inputFileName"></div>
+  </div>
+  <div>
+    <label for="outputType">Convert to:</label>
+    <select id="outputType">
+      <option value="zip">.zip</option>
+      <option value="rar">.rar</option>
+    </select>
+    <div id="outputFileName"></div>
+  </div>
   <button onclick="convertFile()">Convert</button>
 
   <script>
     function convertFile() {
-      const fileInput = document.getElementById('fileInput');
-      const file = fileInput.files[0];
+      const inputFile = document.getElementById('inputFile');
+      const file = inputFile.files[0];
 
       if (!file) {
         alert('Please select a .sb3 file');
         return;
       }
 
-      const fileName = file.name;
-      const conversionType = document.getElementById('conversionType').value;
-      const newFileName = fileName.replace('.sb3', `.${conversionType}`);
+      const outputType = document.getElementById('outputType').value;
+      const newFileName = file.name.replace('.sb3', `.${outputType}`);
 
-      const blob = file.slice(0, file.size, `application/${conversionType}`);
-      const newFile = new File([blob], newFileName, { type: `application/${conversionType}` });
+      const blob = file.slice(0, file.size, `application/${outputType}`);
+      const newFile = new File([blob], newFileName, { type: `application/${outputType}` });
 
       const downloadLink = document.createElement('a');
       downloadLink.href = URL.createObjectURL(newFile);
       downloadLink.download = newFileName;
       downloadLink.click();
     }
+
+    document.getElementById('inputFile').addEventListener('change', function() {
+      const inputFile = document.getElementById('inputFile');
+      const inputFileName = document.getElementById('inputFileName');
+      const file = inputFile.files[0];
+      inputFileName.textContent = file.name || '';
+    });
+
+    document.getElementById('outputType').addEventListener('change', function() {
+      const outputType = document.getElementById('outputType').value;
+      const outputFileName = document.getElementById('outputFileName');
+      const inputFile = document.getElementById('inputFile');
+      const file = inputFile.files[0];
+      const newFileName = file.name.replace('.sb3', `.${outputType}`);
+      outputFileName.textContent = newFileName;
+    });
   </script>
 </body>
 </html>
