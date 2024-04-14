@@ -35,12 +35,11 @@
         return;
       }
 
-      const selectedFileType = file.name.split('.').pop().toLowerCase();
       const outputType = document.getElementById('outputType').value;
       const outputFileType = document.querySelector(`#outputType option[value='${outputType}']`).getAttribute('data-type');
 
-      if (selectedFileType !== outputFileType) {
-        alert(`Cannot convert ${selectedFileType} to ${outputType}`);
+      if (file.type.split('/')[0] !== outputFileType) {
+        alert(`Cannot convert ${file.type} to ${outputType}`);
         return;
       }
 
@@ -61,7 +60,7 @@
       const file = inputFile.files[0];
       inputFileName.textContent = file.name || '';
 
-      const selectedFileType = file.name.split('.').pop().toLowerCase();
+      const selectedFileType = file.type.split('/')[0];
       const outputTypeOptions = document.querySelectorAll('#outputType option');
 
       for (let i = 0; i < outputTypeOptions.length; i++) {
